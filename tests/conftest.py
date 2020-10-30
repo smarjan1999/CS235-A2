@@ -1,15 +1,9 @@
 import os
 import pytest
 
-from covid import create_app
-from covid.adapters import memory_repository
-from covid.adapters.memory_repository import MemoryRepository
+from CS235Flix.adapters.memory_repository import MemoryRepository
 
-
-TEST_DATA_PATH = os.path.join('C:', os.sep, 'Users', 'ianwo', 'OneDrive', 'Documents', 'PythonDev', 'repo 02.07.2020',
-                              'COVID-19', 'tests', 'data')
-#TEST_DATA_PATH = os.path.join('C:', os.sep, 'Users', 'iwar006', 'Documents', 'Python dev', 'COVID-19', 'tests', 'data')
-
+TEST_DATA_PATH = os.path.join('C:', os.sep, 'Users', 'yoosu', 'Documents', 'CS235Flix', 'tests', 'data')
 
 @pytest.fixture
 def in_memory_repo():
@@ -33,7 +27,7 @@ class AuthenticationManager:
     def __init__(self, client):
         self._client = client
 
-    def login(self, username='thorke', password='cLQ^C#oFXloS'):
+    def login(self, username='smar387', password='smarjan1999'):
         return self._client.post(
             'authentication/login',
             data={'username': username, 'password': password}

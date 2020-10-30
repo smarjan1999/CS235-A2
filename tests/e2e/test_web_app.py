@@ -11,7 +11,7 @@ def test_register(client):
     # Check that we can register a user successfully, supplying a valid username and password.
     response = client.post(
         '/authentication/register',
-        data={'username': 'gmichael', 'password': 'CarelessWhisper1984'}
+        data={'username': 'smar387', 'password': 'smarjan1999'}
     )
     assert response.headers['Location'] == 'http://localhost/authentication/login'
 
@@ -58,15 +58,15 @@ def test_logout(client, auth):
         assert 'user_id' not in session
 
 
-def test_index(client):
+def test_home(client):
     # Check that we can retrieve the home page.
     response = client.get('/')
     assert response.status_code == 200
-    assert b'The COVID Pandemic of 2020' in response.data
+    assert b'CS235Flix' in response.data
 
 
-def test_login_required_to_comment(client):
-    response = client.post('/comment')
+def test_login_required_to_review(client):
+    response = client.post('/review')
     assert response.headers['Location'] == 'http://localhost/authentication/login'
 
 
@@ -75,70 +75,46 @@ def test_comment(client, auth):
     auth.login()
 
     # Check that we can retrieve the comment page.
-    response = client.get('/comment?article=2')
+    response = client.get('/review?movie=1')
 
     response = client.post(
-        '/comment',
-        data={'comment': 'Who needs quarantine?', 'article_id': 2}
+        '/review',
+        data={'review': 'Very boring', 'rating': 2, 'movie_rank': 200}
     )
     assert response.headers['Location'] == 'http://localhost/articles_by_date?date=2020-02-29&view_comments_for=2'
 
 
 @pytest.mark.parametrize(('comment', 'messages'), (
-        ('Who thinks Trump is a fuckwit?', (b'Your comment must not contain profanity')),
-        ('Hey', (b'Your comment is too short')),
+        ('Who thinks Trump is a fuckwit?', b'Your comment must not contain profanity'),
+        ('Hey', b'Your comment is too short'),
         ('ass', (b'Your comment is too short', b'Your comment must not contain profanity')),
 ))
-def test_comment_with_invalid_input(client, auth, comment, messages):
-    # Login a user.
-    auth.login()
-
-    # Attempt to comment on an article.
+def test_register_with_invalid_input(client, username, password, message):
+    # Check that attempting to register with invalid combinations of username and password generate appropriate error
+    # messages.
     response = client.post(
-        '/comment',
-        data={'comment': comment, 'article_id': 2}
+        '/authentication/register',
+        data={'username': username, 'password': password}
     )
-    # Check that supplying invalid comment text generates appropriate error messages.
-    for message in messages:
-        assert message in response.data
+    # Check that supplying invalid review text generates appropriate error messages.
+    assert message in response.data
 
 
-def test_articles_without_date(client):
-    # Check that we can retrieve the articles page.
-    response = client.get('/articles_by_date')
+def test_articles_with_review(client):
+    # Check that we can retrieve the movies page.
+    response = client.get('/movies_by_genre?genre=Action&cursor=0&view_reviews_for=1')
     assert response.status_code == 200
 
-    # Check that without providing a date query parameter the page includes the first article.
-    assert b'Friday February 28 2020' in response.data
-    assert b'Coronavirus: First case of virus in New Zealand' in response.data
+    # Check that all reviews for specified article are included on the page.
+    assert b'La La Land is one of the musicals ever!' in response.data
 
 
-def test_articles_with_date(client):
-    # Check that we can retrieve the articles page.
-    response = client.get('/articles_by_date?date=2020-02-29')
+def test_movies_with_genre(client):
+    # Check that we can retrieve the movies page.
+    response = client.get('/movies_by_genre?genre=Action')
     assert response.status_code == 200
 
-    # Check that all articles on the requested date are included on the page.
-    assert b'Saturday February 29 2020' in response.data
-    assert b'Covid 19 coronavirus: US deaths double in two days, Trump says quarantine not necessary' in response.data
-
-
-def test_articles_with_comment(client):
-    # Check that we can retrieve the articles page.
-    response = client.get('/articles_by_date?date=2020-02-28&view_comments_for=1')
-    assert response.status_code == 200
-
-    # Check that all comments for specified article are included on the page.
-    assert b'Oh no, COVID-19 has hit New Zealand' in response.data
-    assert b'Yeah Freddie, bad news' in response.data
-
-
-def test_articles_with_tag(client):
-    # Check that we can retrieve the articles page.
-    response = client.get('/articles_by_tag?tag=Health')
-    assert response.status_code == 200
-
-    # Check that all articles tagged with 'Health' are included on the page.
-    assert b'Articles tagged by Health' in response.data
-    assert b'Coronavirus: First case of virus in New Zealand' in response.data
-    assert b'Covid 19 coronavirus: US deaths double in two days, Trump says quarantine not necessary' in response.data
+    # Check that all movies tagged with 'Romance' are included on the page.
+    assert b'Movies with genre Romance' in response.data
+    assert b'Passengers' in response.data
+    assert b'Me Before You' in response.data

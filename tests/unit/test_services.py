@@ -2,10 +2,10 @@ from datetime import date
 
 import pytest
 
-from covid.authentication.services import AuthenticationException
-from covid.news import services as news_services
-from covid.authentication import services as auth_services
-from covid.news.services import NonExistentArticleException
+from CS235Flix.authentication.services import AuthenticationException
+from CS235Flix.news import services as news_services
+from CS235Flix.authentication import services as auth_services
+from CS235Flix.news.services import NonExistentArticleException
 
 
 def test_can_add_user(in_memory_repo):
@@ -57,7 +57,7 @@ def test_can_add_comment(in_memory_repo):
     username = 'fmercury'
 
     # Call the service layer to add the comment.
-    news_services.add_comment(article_id, comment_text, username, in_memory_repo)
+    news_services.add_review(article_id, comment_text, username, in_memory_repo)
 
     # Retrieve the comments for the article from the repository.
     comments_as_dict = news_services.get_comments_for_article(article_id, in_memory_repo)
@@ -75,7 +75,7 @@ def test_cannot_add_comment_for_non_existent_article(in_memory_repo):
 
     # Call the service layer to attempt to add the comment.
     with pytest.raises(news_services.NonExistentArticleException):
-        news_services.add_comment(article_id, comment_text, username, in_memory_repo)
+        news_services.add_review(article_id, comment_text, username, in_memory_repo)
 
 
 def test_cannot_add_comment_by_unknown_user(in_memory_repo):
@@ -85,7 +85,7 @@ def test_cannot_add_comment_by_unknown_user(in_memory_repo):
 
     # Call the service layer to attempt to add the comment.
     with pytest.raises(news_services.UnknownUserException):
-        news_services.add_comment(article_id, comment_text, username, in_memory_repo)
+        news_services.add_review(article_id, comment_text, username, in_memory_repo)
 
 
 def test_can_get_article(in_memory_repo):

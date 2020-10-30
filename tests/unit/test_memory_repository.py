@@ -3,12 +3,12 @@ from typing import List
 
 import pytest
 
-from covid.domain.model import User, Article, Tag, Comment, make_comment
-from covid.adapters.repository import RepositoryException
+from CS235Flix.domain.model import Director, Article, Tag, Comment, make_comment
+from CS235Flix.adapters.repository import RepositoryException
 
 
 def test_repository_can_add_a_user(in_memory_repo):
-    user = User('Dave', '123456789')
+    user = Director('Dave', '123456789')
     in_memory_repo.add_user(user)
 
     assert in_memory_repo.get_user('Dave') is user
@@ -16,7 +16,7 @@ def test_repository_can_add_a_user(in_memory_repo):
 
 def test_repository_can_retrieve_a_user(in_memory_repo):
     user = in_memory_repo.get_user('fmercury')
-    assert user == User('fmercury', '8734gfe2058v')
+    assert user == Director('fmercury', '8734gfe2058v')
 
 
 def test_repository_does_not_retrieve_a_non_existent_user(in_memory_repo):
@@ -40,7 +40,7 @@ def test_repository_can_add_article(in_memory_repo):
         'https://www.nzherald.co.nz/resizer/ix7hy3lzkMWUkD8hE6kdZ-8oaOM=/620x349/smart/filters:quality(70)/arc-anglerfish-syd-prod-nzme.s3.amazonaws.com/public/7VFOBLCBCNDHLICBY3CTPFR2L4.jpg',
         7
     )
-    in_memory_repo.add_article(article)
+    in_memory_repo.add_movie(article)
 
     assert in_memory_repo.get_article(7) is article
 
@@ -173,7 +173,7 @@ def test_repository_returns_none_when_there_are_no_subsequent_articles(in_memory
 
 def test_repository_can_add_a_tag(in_memory_repo):
     tag = Tag('Motoring')
-    in_memory_repo.add_tag(tag)
+    in_memory_repo.add_movie(tag)
 
     assert tag in in_memory_repo.get_tags()
 
@@ -183,7 +183,7 @@ def test_repository_can_add_a_comment(in_memory_repo):
     article = in_memory_repo.get_article(2)
     comment = make_comment("Trump's onto it!", user, article)
 
-    in_memory_repo.add_comment(comment)
+    in_memory_repo.add_watchlist(comment)
 
     assert comment in in_memory_repo.get_comments()
 
@@ -193,7 +193,7 @@ def test_repository_does_not_add_a_comment_without_a_user(in_memory_repo):
     comment = Comment(None, article, "Trump's onto it!", datetime.today())
 
     with pytest.raises(RepositoryException):
-        in_memory_repo.add_comment(comment)
+        in_memory_repo.add_watchlist(comment)
 
 
 def test_repository_does_not_add_a_comment_without_an_article_properly_attached(in_memory_repo):
@@ -201,11 +201,11 @@ def test_repository_does_not_add_a_comment_without_an_article_properly_attached(
     article = in_memory_repo.get_article(2)
     comment = Comment(None, article, "Trump's onto it!", datetime.today())
 
-    user.add_comment(comment)
+    user.add_watchlist(comment)
 
     with pytest.raises(RepositoryException):
         # Exception expected because the Article doesn't refer to the Comment.
-        in_memory_repo.add_comment(comment)
+        in_memory_repo.add_watchlist(comment)
 
 
 def test_repository_can_retrieve_comments(in_memory_repo):

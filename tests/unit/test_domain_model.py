@@ -1,6 +1,6 @@
-from datetime import date
+from CS235Flix.domain.model \
 
-from covid.domain.model import User, Article, Tag, make_comment, make_tag_association, ModelException
+import Director, Genre, Actor, Movie, Review, User, WatchList, MovieWatchingSimulation
 
 import pytest
 
@@ -18,7 +18,7 @@ def article():
 
 @pytest.fixture()
 def user():
-    return User('dbowie', '1234567890')
+    return Director('dbowie', '1234567890')
 
 
 @pytest.fixture()

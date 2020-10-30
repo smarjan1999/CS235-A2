@@ -8,7 +8,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="PackageRequirementsSettings">
-    <option name="requirementsPath" value="C:\Users\yoosu\Downloads\COVID\config.py" />
+    <option name="requirementsPath" value="C:\Users\yoosu\Downloads\COVID\requirements.txt" />
   </component>
   <component name="PyDocumentationSettings">
     <option name="format" value="PLAIN" />
